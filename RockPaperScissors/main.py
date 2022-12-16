@@ -7,11 +7,45 @@ import arcade
 
 # --- Constants ---
 SPRITE_SCALING_ITEM = .75
-ITEM_COUNT = 25
+ITEM_COUNT = 30
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 700
-SCREEN_TITLE = "Sprite Collect Coins Example"
+SCREEN_TITLE = "Rock vs Paper vs Scissors"
+
+images = [r"C:\Git projects\PythonGames\RockPaperScissors\Rock.png",
+          r"C:\Git projects\PythonGames\RockPaperScissors\Paper.png",
+          r"C:\Git projects\PythonGames\RockPaperScissors\Scissors.png"]
+
+
+class Item(arcade.Sprite):
+
+    def __init__(self, filename, sprite_scaling, tip):
+
+        super().__init__(filename, sprite_scaling)
+
+        self.change_x = 0
+        self.change_y = 0
+        self.item_type = tip
+
+    def update(self):
+
+        # Move the item
+        self.center_x += self.change_x
+        self.center_y += self.change_y
+
+        # If we are out-of-bounds, then 'bounce'
+        if self.left < 0:
+            self.change_x *= -1
+
+        if self.right > SCREEN_WIDTH:
+            self.change_x *= -1
+
+        if self.bottom < 50:
+            self.change_y *= -1
+
+        if self.top > SCREEN_HEIGHT:
+            self.change_y *= -1
 
 
 class MyGame(arcade.Window):
@@ -23,63 +57,128 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Variables that will hold sprite lists
+        self.all_sprite_list = None
         self.rock_list = None
         self.paper_list = None
         self.scissors_list = None
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.item_sprite = None
+
+        # scores
+        self.r_score = 0
+        self.p_score = 0
+        self.s_score = 0
+
+        arcade.set_background_color(arcade.color.WHITE_SMOKE)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
+        self.all_sprite_list = arcade.SpriteList()
         self.rock_list = arcade.SpriteList()
         self.paper_list = arcade.SpriteList()
         self.scissors_list = arcade.SpriteList()
+
+        self.r_score = 0
+        self.p_score = 0
+        self.s_score = 0
 
         # Create the items
         for i in range(3):
             for j in range(ITEM_COUNT):
                 if i == 0:
-                    # Create the coin instance
-                    # Coin image from kenney.nl
-                    item = arcade.Sprite(r"C:\Git projects\PythonGames\RockPaperScissors\Rock.png", SPRITE_SCALING_ITEM, hit_box_algorithm='Simple')
+                    # Create the rock instance
+                    # Rock image
+                    self.item_sprite = Item(images[0], SPRITE_SCALING_ITEM, 'r')
 
-                    # Position the coin
-                    item.center_x = random.randrange(SCREEN_WIDTH)
-                    item.center_y = random.randrange(SCREEN_HEIGHT)
+                    self.r_score += 1
 
-                    # Add the coin to the lists
-                    self.rock_list.append(item)
+                    # Position the rock
+                    self.item_sprite.center_x = random.randrange(SCREEN_WIDTH)
+                    self.item_sprite.center_y = random.randrange(50, SCREEN_HEIGHT)
+                    dx = random.randrange(-5, 5)
+                    if dx == 0:
+                        dx = 1
+                    dy = random.randrange(-5, 5)
+                    if dy == 0:
+                        dy = 1
+                    self.item_sprite.change_x = dx
+                    self.item_sprite.change_y = dy
+
+                    # Add the rock to the lists
+                    self.all_sprite_list.append(self.item_sprite)
+                    self.rock_list.append(self.item_sprite)
                 elif i == 1:
-                    # Create the coin instance
-                    # Coin image from kenney.nl
-                    item = arcade.Sprite(r"C:\Git projects\PythonGames\RockPaperScissors\Paper.png", SPRITE_SCALING_ITEM)
+                    self.item_sprite = Item(images[1], SPRITE_SCALING_ITEM, 'p')
+                    self.p_score += 1
 
-                    # Position the coin
-                    item.center_x = random.randrange(SCREEN_WIDTH)
-                    item.center_y = random.randrange(SCREEN_HEIGHT)
+                    self.item_sprite.center_x = random.randrange(SCREEN_WIDTH)
+                    self.item_sprite.center_y = random.randrange(50, SCREEN_HEIGHT)
+                    dx = random.randrange(-5, 5)
+                    if dx == 0:
+                        dx = 1
+                    dy = random.randrange(-5, 5)
+                    if dy == 0:
+                        dy = 1
+                    self.item_sprite.change_x = dx
+                    self.item_sprite.change_y = dy
 
-                    # Add the coin to the lists
-                    self.paper_list.append(item)
+                    self.all_sprite_list.append(self.item_sprite)
+                    self.paper_list.append(self.item_sprite)
                 elif i == 2:
-                    # Create the coin instance
-                    # Coin image from kenney.nl
-                    item = arcade.Sprite(r"C:\Git projects\PythonGames\RockPaperScissors\Scissors.png", SPRITE_SCALING_ITEM)
+                    self.item_sprite = Item(images[2], SPRITE_SCALING_ITEM, 's')
+                    self.s_score += 1
 
-                    # Position the coin
-                    item.center_x = random.randrange(SCREEN_WIDTH)
-                    item.center_y = random.randrange(SCREEN_HEIGHT)
+                    self.item_sprite.center_x = random.randrange(SCREEN_WIDTH)
+                    self.item_sprite.center_y = random.randrange(50, SCREEN_HEIGHT)
+                    dx = random.randrange(-5, 5)
+                    if dx == 0:
+                        dx = 1
+                    dy = random.randrange(-5, 5)
+                    if dy == 0:
+                        dy = 1
+                    self.item_sprite.change_x = dx
+                    self.item_sprite.change_y = dy
 
-                    # Add the coin to the lists
-                    self.scissors_list.append(item)
+                    self.all_sprite_list.append(self.item_sprite)
+                    self.scissors_list.append(self.item_sprite)
 
     def on_draw(self):
         """ Draw everything """
         self.clear()
+        self.all_sprite_list.draw()
         self.rock_list.draw()
         self.paper_list.draw()
         self.scissors_list.draw()
+
+        output = f"Rocks: {self.r_score} Papers: {self.p_score} Scissors: {self.s_score}"
+        arcade.draw_text(output, 10, 10, arcade.color.BLACK, 20)
+
+    def on_update(self, delta_time):
+        """ Movement and game logic """
+
+        # Call update on all sprites (The sprites don't do much in this example though.)
+        self.all_sprite_list.update()
+
+        # delete ones that are hit
+        for p in self.paper_list:
+            r_hit_list = arcade.check_for_collision_with_list(p, self.rock_list)
+            for rock in r_hit_list:
+                rock.remove_from_sprite_lists()
+                self.r_score -= 1
+
+        for s in self.scissors_list:
+            p_hit_list = arcade.check_for_collision_with_list(s, self.paper_list)
+            for paper in p_hit_list:
+                paper.remove_from_sprite_lists()
+                self.p_score -= 1
+
+        for r in self.rock_list:
+            s_hit_list = arcade.check_for_collision_with_list(r, self.scissors_list)
+            for scissors in s_hit_list:
+                scissors.remove_from_sprite_lists()
+                self.s_score -= 1
 
 
 def main():
@@ -91,97 +190,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-'''
-import arcade
-import random
-
-item_type = ['Rock', 'Paper', 'Scissors']
-WIDTH = 400
-HEIGHT = 600
-TITLE = 'Rock vs Paper vs Scissors'
-NUMBER_OF_ITEMS = 30
-
-
-class Item:
-    # class variables
-    max_rocks = 10
-    max_papers = 10
-    max_scissors = 10
-
-    # class methods
-    def __init__(self, x_pos, y_pos, delta_x, delta_y, itm_type):
-        """
-        initial values for class instance variables
-        :param x_pos: position of the item on the x axis
-        :param y_pos: position of the item on the y axis
-        :param itm_type: can be Rock, Paper or Scissors
-        :return:
-        """
-        self.x = x_pos
-        self.y = y_pos
-        self.delta_x = delta_x
-        self.delta_y = delta_y
-        self.item_type = itm_type
-
-    def move(self):
-        if self.x >= WIDTH:
-            self.x = WIDTH - 2
-        elif self.x <= 0:
-            self.x = 2
-        else:
-            self.x += (random.choice([-1, 1]) * Item.move_speed)
-
-        if self.y >= HEIGHT:
-            self.y = HEIGHT - 2
-        elif self.y <= 0:
-            self.y = 2
-        else:
-            self.y += (random.choice([-1, 1]) * self.move_speed)
-
-
-class MyGame(arcade.Window):
-    """ Main application class. """
-    def __init__(self):
-        # Call the parent __init__
-        super().__init__(WIDTH, HEIGHT, TITLE)
-
-        # Create a item list
-        self.item_list = []
-
-        for i in range(NUMBER_OF_ITEMS):
-
-            # Random spot
-            x = random.randrange(0, WIDTH)
-            y = random.randrange(0, HEIGHT)
-
-            i_type = random.randrange(3)
-
-            item = Item(x, y, item_type[i_type])
-
-            # Add this new shape to the list
-            self.item_list.append(item)
-
-    def on_update(self, dt):
-        """ Move everything """
-        for item in self.item_list:
-            item.move()
-
-    def on_draw(self):
-        """ Render the screen. """
-
-        # Clear teh screen
-        self.clear()
-
-        # Draw the shapes
-        for item in self.item_list:
-            item.draw()
-
-
-def main():
-    MyGame()
-    arcade.run()
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    main()'''
