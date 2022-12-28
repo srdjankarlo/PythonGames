@@ -1,8 +1,6 @@
 import pygame
-import time
 import os
 import random
-import keyboard
 
 pygame.font.init()
 
@@ -156,10 +154,9 @@ def main():
                 over = True  # izlazi iz petlje
                 pygame.quit()  # izlazi iz pygame
                 quit()  # izlazi iz programa
-        
-        for event in pygame.event.get():  # kad god se nesto desi, npr korisnik klikne misem
-            if event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_y:
+                    over = True
                     main()
                 elif event.key == pygame.K_n:
                     over = True
